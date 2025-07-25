@@ -1,4 +1,4 @@
-# CustomHecia
+# HECIA workshop platform
 
 Access here: https://github.com/lin-shu-yu/hecia-workshop <br>
 
