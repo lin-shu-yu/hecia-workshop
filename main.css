@@ -1,0 +1,757 @@
+/* Base Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* width/height includes content, padding, borders */
+  font-family: monospace, monospace;
+}
+
+body,
+html {
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  overflow: hidden;
+}
+
+/* Main Layout */
+.container {
+  display: flex;
+  flex-direction: row; /* Stacked horizontally */
+  height: 100%;
+}
+
+/* FACTORS SIDEBAR */
+
+/* Container */
+.categories {
+  display: flex;
+  flex-direction: column; /* Stacked vertically */
+  width: 20vw;
+  padding: 1.2%;
+  gap: 3%;
+  background-color: #bcd8e5;
+  border: 1px solid #318da9;
+  margin: 1%;
+  border-radius: 5px;
+}
+
+/* Factors Title */
+.categories-title {
+  font-size: 25px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #318da9;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+  padding: 5px;
+  text-align: center;
+  border-radius: 5px;
+  letter-spacing: 1px;
+}
+
+.box {
+  border-radius: 5px;
+  padding: 10px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 42.5%;
+}
+
+.box1 {
+  background-color: #94ecff;
+  border-top: 3px solid #56b4e9;
+}
+
+.box2 {
+  background-color: #ffd54d;
+  border-top: 3px solid #e69f00;
+}
+
+/* Header for individual Factor box */
+.section_header {
+  font-size: 14px;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #464646;
+  padding: 6px 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 5px;
+  margin-bottom: 1px;
+  letter-spacing: 0.5px;
+}
+
+/* Factor Items */
+.factors-container {
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+.factor {
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: grab;
+  position: absolute;
+  font-size: 12px;
+  color: white;
+  margin: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+
+  /* Limit width of factor and have overflow extend factor vertically */
+  max-width: 180px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* For factor box in connection modal so we cannot drag on factors */
+.factor-clone {
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: absolute;
+  font-size: 12px;
+  color: white;
+  margin: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  transition: all 0.2s ease;
+
+  /* Limit width of factor and have overflow extend factor vertically */
+  max-width: 180px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.factor:active {
+  cursor: grabbing;
+}
+
+/* Original factors in the sidebar */
+.categories .factor {
+  position: static;
+  margin: 2px;
+}
+
+/* Dragging state */
+.factor.dragging {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  z-index: 10000; /* Above everything */
+  transition: none; /* Smooth dragging */
+  position: relative;
+}
+
+/* FACTORS COLORING */
+
+/* Designed Features Factors */
+.blue {
+  background-color: #56b4e9;
+  border: 1px solid #3a9bd1;
+}
+
+.blue:hover {
+  background-color: #7fc9f0;
+  transform: translateX(1px);
+}
+
+.factor.blue.selected {
+  background-color: #3a9bd1;
+  border-left: 3px solid #1e82b8;
+}
+
+/* Behavioral Health Factors */
+.yellow {
+  background-color: #e69f00;
+  border: 1px solid #cc8f00;
+}
+
+.yellow:hover {
+  background-color: #f0b133;
+  transform: translateX(1px);
+}
+
+.yellow.selected {
+  background-color: #cc8f00;
+  border-left: 3px solid #a67500;
+}
+
+/* Custom Factors */
+.gray {
+  background-color: #8d8d8d;
+  border: 1px solid #505050;
+}
+
+.gray:hover {
+  background-color: #a5a5a5;
+  transform: translateX(1px);
+}
+
+.factor.gray.selected {
+  background-color: #696969;
+  border-left: 3px solid #565656;
+}
+
+/* Custom Factor DF category */
+.gray-df {
+  background-color: #8d8d8d;
+  border: 1.5px solid #3a9bd1;
+}
+
+.gray-df:hover {
+  background-color: #a5a5a5;
+  transform: translateX(1px);
+}
+
+.gray-df.selected {
+  background-color: #696969;
+  border-left: 4px solid #1e82b8;
+}
+
+/* Custom Factor BH category */
+.gray-bh {
+  background-color: #8d8d8d;
+  border: 1.5px solid #cc8f00;
+}
+
+.gray-bh:hover {
+  background-color: #a5a5a5;
+  transform: translateX(1px);
+}
+
+.gray-bh.selected {
+  background-color: #696969;
+  border-left: 4px solid #a67500;
+}
+
+/* ARROW STYLES */
+
+.connection-line {
+  stroke: white;
+  stroke-width: 1.5;
+  transition: all 0.2s ease;
+}
+
+/* When we hover over the arrow, these changes to connection-line */
+.connection-group:hover .connection-line {
+  filter: drop-shadow(0 0 2px #ffffff);
+}
+
+/* When we select the arrow, these changes to connection-line */
+.connection-group.selected .connection-line {
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 2px #ffffff);
+}
+
+.connection-hit-area {
+  stroke: transparent;
+  stroke-width: 15;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* INFO PANEL */
+
+/* Container */
+.info-panel {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  position: relative;
+  font-size: 12px;
+  width: 20vw;
+  background-color: rgb(234, 248, 244);
+  border: 1px solid #31a989;
+  border-radius: 5px;
+  margin: 1%;
+  padding: 1.2%;
+  padding-bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  /* Overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Info panel content */
+.info-content {
+  flex: 1 1 auto;
+}
+
+/* Title of the info panel */
+.info-panel h3 {
+  margin-bottom: 18px;
+  padding: 0 10px 10px 10px;
+  border-bottom: 2px solid #31a989; /* Underline */
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+/* Gray Color for factor details that are citations */
+.quotation {
+  color: rgb(169, 169, 169);
+}
+
+/* Factor category styling */
+.factor-category {
+  display: inline-block;
+  margin: 15px 0;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: white;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Designed Features category */
+.factor-category.category-df {
+  background-color: #318da9;
+  border: 1px solid #2a7a92;
+}
+
+/* Behavioral Health category */
+.factor-category.category-bh {
+  background-color: #cc8f00;
+  border: 1px solid #b37e00;
+}
+
+/* Default/No category */
+.factor-category.category-default {
+  background-color: #8d8d8d;
+  border: 1px solid #505050;
+}
+
+/* Info Panel Actions */
+.info-actions {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgb(234, 248, 244);
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  z-index: 2;
+  margin-top: 5px;
+  margin-bottom: 0;
+  padding: 15px;
+}
+
+.info-actions button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s;
+}
+
+/* Edit button */
+.info-actions .edit {
+  background-color: #f0f0f0;
+  color: #3f3f3f;
+}
+
+.info-actions .edit:hover {
+  background-color: #e4e4e4;
+  transform: scale(1.04);
+}
+
+/* Delete button */
+.info-actions .delete {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.info-actions .delete:hover {
+  background-color: #ffcdd2;
+  transform: scale(1.04);
+}
+
+/* MODAL STYLES */
+
+/* Container (for background) */
+.modal {
+  display: none; /* Hidden initially */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal itself */
+.modal-content {
+  background-color: #fefefe;
+  padding: 2%;
+  border-radius: 8px;
+  width: 450px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modal-title {
+  color: #318da9;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+/* Text + Textbox Container */
+.form-group {
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+/* Textbox Text */
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+/* Textbox (general) */
+.form-group input[type="text"],
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Textbox (Larger) */
+.form-group textarea {
+  resize: none;
+  height: 65px;
+}
+
+/* Category Multi-Choice Select */
+
+/* Container for all options */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 0;
+}
+
+/* Container for a single option */
+.radio-option {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 24px;
+  margin: 0;
+  cursor: pointer;
+  font-size: 13px;
+  user-select: none;
+  height: 15px;
+}
+
+/* Radio Button */
+.radio-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-checkmark {
+  position: absolute;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: #fff;
+  border: 1px solid #95a5a6;
+  border-radius: 50%;
+  transition: all 0.1s;
+}
+
+.radio-option input:checked ~ .radio-checkmark {
+  border-color: #318da9;
+}
+
+.radio-checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.radio-option input:checked ~ .radio-checkmark:after {
+  display: block;
+}
+
+.radio-option .radio-checkmark:after {
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #318da9;
+}
+
+.radio-label {
+  margin-left: 6px;
+  line-height: 1.2;
+}
+
+.custom-category-container {
+  margin: 4px 0 2px 22px;
+  display: none;
+}
+
+.custom-category-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #bdc3c7;
+  border-radius: 3px;
+  font-size: 13px;
+  height: 26px;
+}
+
+.custom-category-input:focus {
+  outline: none;
+  border-color: #318da9;
+  box-shadow: 0 0 0 1px rgba(49, 141, 169, 0.2);
+}
+
+/* Connection Modal Factors Styles */
+.connection-factors {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.factor-selector {
+  flex: 1;
+}
+
+.factor-label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #495057;
+  font-size: 14px;
+}
+
+.factor-box {
+  border: 2px dashed #dee2e6;
+  padding: 15px;
+  border-radius: 8px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.factor-box:hover {
+  border-color: #4dabf7;
+}
+
+.click-to-select {
+  color: #868e96;
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* Connection description styling */
+#connectionDescription {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  transition: all 0.2s ease-in-out;
+}
+
+#connectionDescription:focus {
+  border-color: #339af0;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+/* Cancel / Save Buttons Container */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Cancel / Save Buttons */
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.btn-cancel {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.btn-cancel:hover {
+  background-color: #e0e0e0;
+}
+
+.btn-save {
+  background-color: #318da9;
+  color: white;
+}
+
+.btn-save:hover {
+  background-color: #2a7a92;
+}
+
+/* DROP ZONE */
+
+.drop {
+  justify-content: center;
+  align-items: center;
+  background-color: #d7d7d7;
+  border: 1px solid #318da9;
+  height: 96%;
+  width: 56vw;
+  margin: 1% 0%;
+  position: relative;
+  z-index: 0;
+}
+
+/* CONNECTION MODE */
+
+/* Connection Mode Drop Zone */
+.connection-mode-active #drop-zone {
+  position: relative;
+  outline: 2px solid #4a6cf7;
+  box-shadow: 0 0 0 2px #4a6cf7;
+  transition: all 0.3s ease;
+}
+
+/* Disables add factor and create connection button while in connection mode*/
+.connection-mode-active button:disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease;
+}
+
+/* Disables factors outside dropzone while in connection mode */
+.connection-mode-active .factor[style*="pointer-events: none"] {
+  opacity: 0.2 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease;
+}
+
+/* Disables info panel while in connection-mode */
+.connection-mode-active .info-panel {
+  opacity: 0.3 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease;
+}
+
+/* Cancel connection button */
+.cancel-connection-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+  transition: all 0.2s ease-in-out;
+}
+
+.cancel-connection-btn:hover {
+  background: #ce2029;
+}
+
+/* Bottom Bar (Add Factor + Create Connection) */
+.bottom-bar {
+  position: fixed;
+  bottom: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 9998;
+}
+
+/* Add Factor / Create Connection Buttons */
+.action-btn {
+  color: #318da9;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  background-color: white;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn:hover {
+  transform: scale(1.02);
+  color: #ffffff;
+  background-color: #318da9;
+}
+
+.action-btn#clearBoardBtn {
+  color: white;
+  background: #e74c3c;
+  transition: all 0.2s ease-in-out;
+}
+.action-btn#clearBoardBtn:hover {
+  background: #9b2b1f;
+  transform: scale(1);
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
