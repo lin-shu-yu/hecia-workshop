@@ -1,10 +1,10 @@
 // ***********
 // FACTOR DATA
 // ***********
-// "title": Appears at Top of Info Panel (And Factor itself)
+// "title": Appears at Top of Info Panel (And Displayed on Draggable Factor)
 // "description": Appears below title in Info Panel
 // "citation": Appears below description in Info Panel, in gray
-// "category": Appears as "tag" below citation in Info Panel
+// "category": Appears below citation in Info Panel, styled as a "tag"
 const factorData = {
   // Designed Features Factors
   habitable_volume: {
@@ -195,12 +195,13 @@ const factorData = {
 // VARIABLES
 // *********
 
-// Indicates what's displayed on Info Panel
+// Stores selected (clicked on) items
 const state = {
   selectedFactor: null,
   selectedConnection: null,
 };
 
+// Items stored by ID
 const elements = {
   // Drop Zone
   dropZone: document.getElementById("drop-zone"),
@@ -234,26 +235,28 @@ const elements = {
 // DRAG AND DROP FACTORS INTO DROP ZONE
 // ************************************
 
-// Dragging within dropzone (move factor itself)
+// Variables used when dragging within dropzone (moves factor itself)
 let customDraggingFactor = null;
 let customDragOffsetX = 0;
 let customDragOffsetY = 0;
 
-// Dragging from sidebar to dropzone (move clone of factor)
+// Variables used when dragging from sidebar to dropzone (moves clone of factor)
 let dragClone = null;
 let dragCloneOffsetX = 0;
 let dragCloneOffsetY = 0;
 let originalSidebarFactor = null;
 
-// Drag/click suppression (so we don't click after drag)
+// Drag/click suppression (so we don't select a factor after dragging said factor)
 let dragJustHappened = false;
 let dragStartX = 0;
 let dragStartY = 0;
 let didDrag = false;
 const DRAG_THRESHOLD = 5; // pixels
 
-// Add Factor Click Suppression (if not already added)
+// Factor Click Suppression (if not already added)
 if (!window._factorClickSuppressionAdded) {
+  // When the document registers a click, if dragJustHappened is true and the click was
+  // registered on a factor, return before selecting the factor
   document.addEventListener(
     "click",
     function (e) {
@@ -271,14 +274,14 @@ if (!window._factorClickSuppressionAdded) {
   window._factorClickSuppressionAdded = true;
 }
 
-// Handle dragging on a factor
+// Function called when we begin to drag any factor
 function handleCustomMouseDown(e) {
   const factor = e.target.closest(".factor");
   if (!factor) return;
   e.preventDefault();
-  document.body.style.cursor = "grabbing";
+  document.body.style.cursor = "grabbing"; // Set cursor to grabbing
 
-  // If sidebar factor, use clone-drag approach
+  // If we're dragging a factor on the sidebar, drag a clone of the factor
   if (
     factor.style.position !== "absolute" &&
     factor.style.position !== "fixed" &&
@@ -301,17 +304,21 @@ function handleCustomMouseDown(e) {
     document.body.appendChild(dragClone);
     dragCloneOffsetX = offsetX;
     dragCloneOffsetY = offsetY;
+
+    // Add movement listeners for the clone
     document.addEventListener("mousemove", handleCloneMouseMove);
     document.addEventListener("mouseup", handleCloneMouseUp, { once: true });
   }
 
-  // If in drop zone, use normal custom drag
+  // If we're dragging a factor already in the dropzone, drag the factor itself
   else {
     customDraggingFactor = factor;
     const rect = factor.getBoundingClientRect();
     customDragOffsetX = e.clientX - rect.left;
     customDragOffsetY = e.clientY - rect.top;
     factor.classList.add("dragging");
+
+    // Add movement listeners for the factor
     document.addEventListener("mousemove", handleCustomMouseMove);
     document.addEventListener("mouseup", handleCustomMouseUp, { once: true });
   }
@@ -322,7 +329,7 @@ function handleCustomMouseDown(e) {
   didDrag = false;
 }
 
-// Mouse dragging within dropzone
+// Function updating location of factor when dragging factor within dropzone
 function handleCustomMouseMove(e) {
   if (!customDraggingFactor) return;
 
@@ -332,13 +339,13 @@ function handleCustomMouseMove(e) {
   let x = e.clientX - dropZoneRect.left - customDragOffsetX;
   let y = e.clientY - dropZoneRect.top - customDragOffsetY;
 
-  // Clamp so factor stays within drop zone
+  // Clamp location so factor stays within drop zone
   x = Math.max(0, Math.min(x, dropZoneRect.width - factorRect.width));
   y = Math.max(0, Math.min(y, dropZoneRect.height - factorRect.height));
   customDraggingFactor.style.left = `${x + dropZoneRect.left}px`;
   customDraggingFactor.style.top = `${y + dropZoneRect.top}px`;
 
-  // Check if drag distance exceeds threshold to suppress click
+  // Check if drag distance exceeds threshold to suppress click (so we don't select factor post-drag)
   if (
     !didDrag &&
     (Math.abs(e.clientX - dragStartX) > DRAG_THRESHOLD ||
@@ -350,7 +357,7 @@ function handleCustomMouseMove(e) {
   updateArrows();
 }
 
-// Let go of drag within dropzone
+// Function for letting go of drag for factors within dropzone - used for cleanup of dragging
 function handleCustomMouseUp() {
   if (!customDraggingFactor) return;
   customDraggingFactor.classList.remove("dragging");
@@ -361,7 +368,7 @@ function handleCustomMouseUp() {
   dragJustHappened = didDrag;
 }
 
-// Mouse dragging from sidebar to dropzone
+// Function updating location of clone factor when dragging factor to dropzone from sidebar
 function handleCloneMouseMove(e) {
   if (!dragClone) return;
   dragClone.style.left = `${e.clientX - dragCloneOffsetX}px`;
@@ -377,7 +384,7 @@ function handleCloneMouseMove(e) {
   }
 }
 
-// Let go of drag from sidebar
+// Function for letting go of drag for factors from sidebar to dropzone - used for cleanup of dragging
 function handleCloneMouseUp(e) {
   if (!dragClone || !originalSidebarFactor) return;
   document.body.style.cursor = "";
@@ -408,7 +415,7 @@ function handleCloneMouseUp(e) {
   dragJustHappened = didDrag;
 }
 
-// Attach custom drag listener
+// Attach custom drag listener to document (for factor dragging)
 if (!window._customFactorDragListenersAdded) {
   document.addEventListener("mousedown", handleCustomMouseDown);
   window._customFactorDragListenersAdded = true;
@@ -418,50 +425,56 @@ if (!window._customFactorDragListenersAdded) {
 // FACTOR/CONNECTION CLICKING
 // **************************
 
-// Handle factor clicking (showing definition and edit/delete for custom factors)
+// Handle factor clicking (selecting/deselecting factor, then updating UI to reflect selected items)
 function selectFactor(factorElement) {
   const factorId = factorElement.getAttribute("data-factor");
 
-  // If we're clicking the currently selected item
+  // If we're clicking the currently selected item, then we're deselecting the item
   const deselecting = factorId === state.selectedFactor;
 
   // Clear any selections
   clearFactorOrConnection();
 
+  // If we're not deselecting the current item, then select the new factor
   if (!deselecting) {
     // Select new factor
     state.selectedFactor = factorId;
     factorElement.classList.add("selected");
   }
 
+  // Update the UI (Info Panel) to reflect new selections
   updateUI();
 }
 
-// Handle connection clicking (showing connection description)
+// Handle connection clicking (selecting/deselecting connection, then updating UI to reflect selected items)
 function selectConnection(connection) {
-  // If we're clicking the currently selected item
+  // If we're clicking the currently selected item, then we're deselecting the item
   const deselecting = connection === state.selectedConnection;
 
   // Clear any selections
   clearFactorOrConnection();
 
+  // If we're not deselecting the current item, then select the new connection
   if (!deselecting) {
     // Select new connection
     state.selectedConnection = connection;
     connection.elements?.group.classList.add("selected");
   }
 
+  // Update the UI (Info Panel) to reflect new selections
   updateUI();
 }
 
 // Clear any connection or factor
 function clearFactorOrConnection() {
+  // If we've selected a factor, deselect
   if (state.selectedFactor) {
     document
       .querySelector(`.factor[data-factor="${state.selectedFactor}"]`)
       ?.classList.remove("selected");
     state.selectedFactor = null;
   }
+  // If we've selected a connection, deselect
   if (state.selectedConnection) {
     state.selectedConnection.elements?.group.classList.remove("selected");
     state.selectedConnection = null;
@@ -509,7 +522,7 @@ function editFactor(factorId) {
 
   // Check the appropriate radio button if category exists
   if (factor.category) {
-    // Check if category is DF or BH
+    // Check if category is Designed Features or Behavioral Health
     const categoryMap = {
       "Designed Features": "designed_features",
       "Behavioral Health": "behavioral_health",
@@ -611,7 +624,7 @@ function deleteFactor(factorId) {
   saveWorkspaceState();
 }
 
-// Called when "Save" is clicked in Factor Modal
+// Function called when "Save" is clicked in Factor Modal
 function handleAddFactor() {
   const name = elements.factorName.value;
   const description = elements.factorDescription.value;
@@ -622,6 +635,7 @@ function handleAddFactor() {
   const customCategory = elements.customCategory?.value;
   const isEditing = elements.addFactorModal.dataset.editing;
 
+  // If user hasn't filled in name, give an alert and return
   if (!name) {
     alert("Please enter a factor name");
     return;
@@ -642,7 +656,7 @@ function handleAddFactor() {
   let factorId;
   let factorElement = null;
 
-  // Update existing factor
+  // If we're editing a factor, update existing factor data
   if (isEditing) {
     factorId = isEditing;
 
@@ -671,7 +685,7 @@ function handleAddFactor() {
     }
   }
 
-  // Create a new factor
+  // If we are not editing, create a new factor
   else {
     factorId = "custom_" + Date.now();
     factorData[factorId] = {
@@ -701,11 +715,11 @@ function handleAddFactor() {
   saveWorkspaceState();
 }
 
-// Helper function to create and position a factor in the dropzone
+// Helper function to create and position a custom factor in the dropzone
 function createAndPositionFactor(factorId, factorData) {
   // Create the factor element
   const factorElement = document.createElement("div");
-  // Use different class based on category for custom factors
+  // Assign different class (for coloring) based on category for custom factors
   const categoryClass =
     factorData.category === "Designed Features"
       ? "gray-df"
@@ -743,9 +757,9 @@ function createAndPositionFactor(factorId, factorData) {
   return null;
 }
 
-// ****************
+// ***********************
 // CREATE CONNECTION MODAL
-// ****************
+// ***********************
 
 // Connection modal variables
 let selectedFactor1 = null;
@@ -963,7 +977,7 @@ function selectFactorForConnection(factorElement) {
     }
   }
 
-  // Exit connection mode and show the modal
+  // Exit connection mode and show the connection modal
   exitConnectionMode();
   if (elements.connectionModal) {
     elements.connectionModal.style.display = "flex";
@@ -1008,8 +1022,10 @@ document.addEventListener("click", function (e) {
 
 // DRAWING THE ARROW
 
-// Helper function to find intersection point of a line with a rectangle
+// Helper function to find intersection point of a line (connection line) with a rectangle (factor box) to position arrowhead
+// Finds where line connecting center of first factor (x1, y1) and center of second factor (x2, y2) intersects the second factor (rect)
 function getLineRectIntersection(x1, y1, x2, y2, rect) {
+  // Coordinates of corners of factor (x, y)
   const corners = [
     [rect.left, rect.top],
     [rect.right, rect.top],
@@ -1020,6 +1036,7 @@ function getLineRectIntersection(x1, y1, x2, y2, rect) {
   let bestIntersection = null,
     minDist = Infinity;
 
+  // Check intersection with each of the 4 edges of the rectangle
   for (let i = 0; i < 4; i++) {
     const [px1, py1] = corners[i];
     const [px2, py2] = corners[(i + 1) % 4];
@@ -1027,23 +1044,26 @@ function getLineRectIntersection(x1, y1, x2, y2, rect) {
     let intersectX, intersectY;
 
     if (px1 === px2) {
-      // Vertical edge
+      // Vertical edge (left or right side of rectangle)
       if (x1 === x2) continue;
       const m = (y2 - y1) / (x2 - x1);
       intersectX = px1;
       intersectY = y1 - m * x1 + m * intersectX;
+      // Check if intersection point is actually on this edge
       if (intersectY < Math.min(py1, py2) || intersectY > Math.max(py1, py2))
         continue;
     } else {
-      // Horizontal edge
+      // Horizontal edge (top or bottom side of rectangle)
       if (y1 === y2) continue;
       const m = (y2 - y1) / (x2 - x1);
       intersectY = py1;
       intersectX = (intersectY - (y1 - m * x1)) / m;
+      // Check if intersection point is actually on this edge
       if (intersectX < Math.min(px1, px2) || intersectX > Math.max(px1, px2))
         continue;
     }
 
+    // Calculate distance to the intersection point to find the closest intersection
     const dist = Math.sqrt((intersectX - x1) ** 2 + (intersectY - y1) ** 2);
     if (dist < minDist) {
       minDist = dist;
@@ -1067,11 +1087,13 @@ function drawArrow(connection) {
   const rect2 = factor2.getBoundingClientRect();
   const svgRect = svg.getBoundingClientRect();
 
+  // Calculate center points of both factors relative to the SVG container
   const x1 = rect1.left + rect1.width / 2 - svgRect.left;
   const y1 = rect1.top + rect1.height / 2 - svgRect.top;
   const x2 = rect2.left + rect2.width / 2 - svgRect.left;
   const y2 = rect2.top + rect2.height / 2 - svgRect.top;
 
+  // Create rectangle coordinates for the target element (where arrow should end)
   const targetRect = {
     left: rect2.left - svgRect.left,
     top: rect2.top - svgRect.top,
@@ -1079,6 +1101,7 @@ function drawArrow(connection) {
     bottom: rect2.bottom - svgRect.top,
   };
 
+  // Find where the line intersects with the edge of the target rectangle
   const intersection = getLineRectIntersection(x1, y1, x2, y2, targetRect);
   const { x: endX, y: endY } = intersection;
 
@@ -1089,13 +1112,17 @@ function drawArrow(connection) {
       "http://www.w3.org/2000/svg",
       "marker"
     );
+
+    // Set up arrowhead properties
     marker.setAttribute("id", "arrowhead");
+    // To change size of arrowhead, adjust markerWidth/Height, and scale refX/refY according to such scaling of markerWidth/Height
     marker.setAttribute("markerWidth", "6");
     marker.setAttribute("markerHeight", "6");
     marker.setAttribute("refX", "4.5");
     marker.setAttribute("refY", "3");
     marker.setAttribute("orient", "auto");
 
+    // Create the triangle shape for the arrowhead
     const polygon = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "polygon"
@@ -1109,13 +1136,14 @@ function drawArrow(connection) {
     svg.appendChild(defs);
   }
 
-  // Create line and hit area
+  // Create the visible line and an invisible hit area for clicking
   const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
   const hitArea = document.createElementNS(
     "http://www.w3.org/2000/svg",
     "line"
   );
 
+  // Set coordinates for both the line and hit area
   [line, hitArea].forEach((el) => {
     el.setAttribute("x1", x1);
     el.setAttribute("y1", y1);
@@ -1123,9 +1151,11 @@ function drawArrow(connection) {
     el.setAttribute("y2", endY);
   });
 
+  // Style the visible line with arrowhead
   line.setAttribute("marker-end", "url(#arrowhead)");
   line.setAttribute("class", "connection-line");
 
+  // Set up the invisible hit area for mouse interactions
   hitArea.setAttribute("class", "connection-hit-area");
   hitArea.setAttribute("data-connection-id", connections.indexOf(connection));
   hitArea.style.pointerEvents = "auto";
@@ -1134,12 +1164,14 @@ function drawArrow(connection) {
     selectConnection(connection);
   });
 
+  // Group both elements together and add to SVG
   const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
   group.setAttribute("class", "connection-group");
   group.appendChild(line);
   group.appendChild(hitArea);
   svg.appendChild(group);
 
+  // Store references to the SVG elements for later updates
   connection.elements = { group, line, hitArea };
 }
 
@@ -1153,15 +1185,19 @@ function updateArrows() {
       `.factor[data-factor="${connection.factor2}"]`
     );
 
+    // RECALCULATE POSITIONS (same logic as drawArrow)
+
     const rect1 = factor1.getBoundingClientRect();
     const rect2 = factor2.getBoundingClientRect();
     const svgRect = svg.getBoundingClientRect();
 
+    // Calculate center points of both factors relative to the SVG container
     const x1 = rect1.left + rect1.width / 2 - svgRect.left;
     const y1 = rect1.top + rect1.height / 2 - svgRect.top;
     const x2 = rect2.left + rect2.width / 2 - svgRect.left;
     const y2 = rect2.top + rect2.height / 2 - svgRect.top;
 
+    // Create rectangle coordinates for the target element (where arrow should end)
     const targetRect = {
       left: rect2.left - svgRect.left,
       top: rect2.top - svgRect.top,
@@ -1169,9 +1205,11 @@ function updateArrows() {
       bottom: rect2.bottom - svgRect.top,
     };
 
+    // Find where the line intersects with the edge of the target rectangle
     const intersection = getLineRectIntersection(x1, y1, x2, y2, targetRect);
     const { x: endX, y: endY } = intersection;
 
+    // Set coordinates for both the line and hit area
     [connection.elements.line, connection.elements.hitArea].forEach((el) => {
       if (el) {
         el.setAttribute("x1", x1);

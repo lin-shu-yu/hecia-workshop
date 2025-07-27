@@ -1,5 +1,4 @@
-/* Base Styles */
-
+/* Base styles, applies to all elements */
 * {
   margin: 0;
   padding: 0;
@@ -7,6 +6,7 @@
   font-family: monospace, monospace;
 }
 
+/* Base styling for html and body elements */
 body,
 html {
   height: 100%;
@@ -15,19 +15,19 @@ html {
   overflow: hidden;
 }
 
-/* Main Layout */
+/* Overall container (holds factors container, dropzone, and info panel) */
 .container {
   display: flex;
-  flex-direction: row; /* Stacked horizontally */
+  flex-direction: row; /* Items (factors container, dropzone, info panel) stacked horizontally */
   height: 100%;
 }
 
 /* FACTORS SIDEBAR */
 
-/* Container */
+/* Factors Container (holds "Factors" title, Designed Features container, Behavioral Health container) */
 .categories {
   display: flex;
-  flex-direction: column; /* Stacked vertically */
+  flex-direction: column; /* Items ("Factors" title, Designed Features container, Behavioral Health container) stacked vertically */
   width: 20vw;
   padding: 1.2%;
   gap: 3%;
@@ -37,7 +37,7 @@ html {
   border-radius: 5px;
 }
 
-/* Factors Title */
+/* "Factors" Title */
 .categories-title {
   font-size: 25px;
   font-weight: bold;
@@ -52,6 +52,7 @@ html {
   letter-spacing: 1px;
 }
 
+/* Base styles for box (Designed Features, Behavioral Health) holding factors in factor container */
 .box {
   border-radius: 5px;
   padding: 10px;
@@ -60,17 +61,19 @@ html {
   height: 42.5%;
 }
 
+/* "Designed Features" box holding factors coloring */
 .box1 {
   background-color: #94ecff;
   border-top: 3px solid #56b4e9;
 }
 
+/* "Behavioral Health" box holding factors coloring */
 .box2 {
   background-color: #ffd54d;
   border-top: 3px solid #e69f00;
 }
 
-/* Header for individual Factor box */
+/* Header for individual factor box ("Designed Features" / "Behavioral Health") */
 .section_header {
   font-size: 14px;
   background-color: white;
@@ -85,7 +88,7 @@ html {
   letter-spacing: 0.5px;
 }
 
-/* Factor Items */
+/* Container holding factors themselves (positioned below section_header) */
 .factors-container {
   padding: 10px;
   display: flex;
@@ -95,6 +98,7 @@ html {
   align-items: center;
 }
 
+/* Base factor styling */
 .factor {
   padding: 5px 10px;
   border-radius: 4px;
@@ -114,7 +118,8 @@ html {
   overflow-wrap: break-word;
 }
 
-/* For factor box in connection modal so we cannot drag on factors */
+/* Base factor styling displayed in connection modal to prevent drag on factors */
+/* Holds exact same styling as .factor, but is not clickable nor draggable */
 .factor-clone {
   padding: 5px 10px;
   border-radius: 4px;
@@ -133,17 +138,18 @@ html {
   overflow-wrap: break-word;
 }
 
+/* When dragging a factor, change cursor to grabbing */
 .factor:active {
   cursor: grabbing;
 }
 
-/* Original factors in the sidebar */
+/* Specific styling for factors in sidebar factors container */
 .categories .factor {
   position: static;
   margin: 2px;
 }
 
-/* Dragging state */
+/* Dragging state of factor */
 .factor.dragging {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   z-index: 10000; /* Above everything */
@@ -151,9 +157,10 @@ html {
   position: relative;
 }
 
-/* FACTORS COLORING */
+/* FACTORS COLORING - class applied based on category */
+/* Specifies base coloring, coloring when hovered over, and coloring when clicked */
 
-/* Designed Features Factors */
+/* "Designed Features" Factors Coloring */
 .blue {
   background-color: #56b4e9;
   border: 1px solid #3a9bd1;
@@ -169,7 +176,7 @@ html {
   border-left: 3px solid #1e82b8;
 }
 
-/* Behavioral Health Factors */
+/* "Behavioral Health" Factors Coloring */
 .yellow {
   background-color: #e69f00;
   border: 1px solid #cc8f00;
@@ -185,7 +192,7 @@ html {
   border-left: 3px solid #a67500;
 }
 
-/* Custom Factors */
+/* Custom Factors (Custom/No Category) Coloring */
 .gray {
   background-color: #8d8d8d;
   border: 1px solid #505050;
@@ -201,7 +208,7 @@ html {
   border-left: 3px solid #565656;
 }
 
-/* Custom Factor DF category */
+/* Custom Factor ("Designed Features" category) Coloring */
 .gray-df {
   background-color: #8d8d8d;
   border: 1.5px solid #3a9bd1;
@@ -217,7 +224,7 @@ html {
   border-left: 4px solid #1e82b8;
 }
 
-/* Custom Factor BH category */
+/* Custom Factor ("Behavioral Health" category) coloring */
 .gray-bh {
   background-color: #8d8d8d;
   border: 1.5px solid #cc8f00;
@@ -233,25 +240,27 @@ html {
   border-left: 4px solid #a67500;
 }
 
-/* ARROW STYLES */
+/* CONNECTION ARROW STYLES */
 
+/* Connection line itself */
 .connection-line {
   stroke: white;
   stroke-width: 1.5;
   transition: all 0.2s ease;
 }
 
-/* When we hover over the arrow, these changes to connection-line */
+/* When we hover over the arrow, these changes to connection-line (white glow) */
 .connection-group:hover .connection-line {
   filter: drop-shadow(0 0 2px #ffffff);
 }
 
-/* When we select the arrow, these changes to connection-line */
+/* When we select the arrow, these changes to connection-line (white glow, thicker line) */
 .connection-group.selected .connection-line {
   stroke-width: 2.5;
   filter: drop-shadow(0 0 2px #ffffff);
 }
 
+/* Transparent area on connection arrow for easier clicking by user to select connection */
 .connection-hit-area {
   stroke: transparent;
   stroke-width: 15;
@@ -259,9 +268,9 @@ html {
   transition: all 0.2s ease;
 }
 
-/* INFO PANEL */
+/* INFO PANEL (holds factor/connection information when factor/connection selected) */
 
-/* Container */
+/* Info panel container (holds title, description, citation, category, edit/delete buttons) */
 .info-panel {
   display: flex;
   flex-direction: column; /* Stack items vertically */
@@ -288,7 +297,7 @@ html {
   flex: 1 1 auto;
 }
 
-/* Title of the info panel */
+/* Title of the info panel (factor or connection name)*/
 .info-panel h3 {
   margin-bottom: 18px;
   padding: 0 10px 10px 10px;
@@ -303,7 +312,7 @@ html {
   color: rgb(169, 169, 169);
 }
 
-/* Factor category styling */
+/* Basic styling of factor category within info panel */
 .factor-category {
   display: inline-block;
   margin: 15px 0;
@@ -317,25 +326,25 @@ html {
   box-sizing: border-box;
 }
 
-/* Designed Features category */
+/* Designed Features category tag coloring */
 .factor-category.category-df {
   background-color: #318da9;
   border: 1px solid #2a7a92;
 }
 
-/* Behavioral Health category */
+/* Behavioral Health category tag coloring */
 .factor-category.category-bh {
   background-color: #cc8f00;
   border: 1px solid #b37e00;
 }
 
-/* Default/No category */
+/* Default/No category tag coloring */
 .factor-category.category-default {
   background-color: #8d8d8d;
   border: 1px solid #505050;
 }
 
-/* Info Panel Actions */
+/* Container holding "Edit" and "Delete" buttons in info panel */
 .info-actions {
   position: sticky;
   bottom: 0;
@@ -351,6 +360,7 @@ html {
   padding: 15px;
 }
 
+/* Base styles for "Edit" and "Delete" buttons in info panel */
 .info-actions button {
   padding: 4px 10px;
   border: none;
@@ -361,31 +371,33 @@ html {
   transition: all 0.2s;
 }
 
-/* Edit button */
+/* "Edit" button in info panel coloring */
 .info-actions .edit {
   background-color: #f0f0f0;
   color: #3f3f3f;
 }
 
+/* When "Edit" button is hovered, these changes are applied */
 .info-actions .edit:hover {
   background-color: #e4e4e4;
   transform: scale(1.04);
 }
 
-/* Delete button */
+/* "Delete" button in info panel coloring */
 .info-actions .delete {
   background-color: #ffebee;
   color: #c62828;
 }
 
+/* When "Delete" button is hovered, these changes are applied */
 .info-actions .delete:hover {
   background-color: #ffcdd2;
   transform: scale(1.04);
 }
 
-/* MODAL STYLES */
+/* "Add Factor" AND "Create Connection" MODAL (popup) STYLES */
 
-/* Container (for background) */
+/* Styling applied to background when "Add Factor" or "Create Connection" modal opened */
 .modal {
   display: none; /* Hidden initially */
   position: fixed;
@@ -400,7 +412,7 @@ html {
   align-items: center;
 }
 
-/* Modal itself */
+/* Modal content itself (container for inputs) */
 .modal-content {
   background-color: #fefefe;
   padding: 2%;
@@ -410,6 +422,7 @@ html {
   position: relative;
 }
 
+/* Title of modal ("Add Factor", "Edit Factor", "Create Connection", or "Edit Connection") */
 .modal-title {
   color: #318da9;
   font-weight: bold;
@@ -419,20 +432,20 @@ html {
   text-transform: uppercase;
 }
 
-/* Text + Textbox Container */
+/* Text + Textbox Container (e.g. "Factor Name" and input box to enter factor name) */
 .form-group {
   margin-bottom: 12px;
   font-size: 14px;
 }
 
-/* Textbox Text */
+/* Textbox Text (e.g. "Factor Name") */
 .form-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
 }
 
-/* Textbox (general) */
+/* Textbox (to input custom factor/connection details) */
 .form-group input[type="text"],
 .form-group textarea {
   width: 100%;
@@ -441,15 +454,15 @@ html {
   border-radius: 4px;
 }
 
-/* Textbox (Larger) */
+/* Larger Textbox (applied to input boxes expecting longer inputs - e.g., factor definition) */
 .form-group textarea {
   resize: none;
   height: 65px;
 }
 
-/* Category Multi-Choice Select */
+/* Category Multi-Choice Select within "Add Factor" Modal */
 
-/* Container for all options */
+/* Container holding all multi-choice options */
 .radio-group {
   display: flex;
   flex-direction: column;
@@ -457,7 +470,7 @@ html {
   margin-top: 0;
 }
 
-/* Container for a single option */
+/* Container holding a single option (contains radio button and name of category) */
 .radio-option {
   display: flex;
   align-items: center;
@@ -470,13 +483,14 @@ html {
   height: 15px;
 }
 
-/* Radio Button */
+/* Radio Button (multi-choice button option for categories). Is hidden and custom styling is instead used. */
 .radio-option input[type="radio"] {
   position: absolute;
   opacity: 0;
   cursor: pointer;
 }
 
+/* Custom styling for unchecked radio button */
 .radio-checkmark {
   position: absolute;
   left: 0;
@@ -487,6 +501,8 @@ html {
   border-radius: 50%;
   transition: all 0.1s;
 }
+
+/* Checked radio button styling */
 
 .radio-option input:checked ~ .radio-checkmark {
   border-color: #318da9;
@@ -511,16 +527,20 @@ html {
   background: #318da9;
 }
 
+/* Category name for multi-choice select (e.g. "Designed Features", "Behavioral Health", "Custom") */
 .radio-label {
   margin-left: 6px;
   line-height: 1.2;
 }
 
+/* Container holding input box for custom category input in "Add Factor" modal */
+/* Initially hidden, display set to "block" upon click on "Custom" category click */
 .custom-category-container {
   margin: 4px 0 2px 22px;
   display: none;
 }
 
+/* Custom category input box in "Add Factor" modal */
 .custom-category-input {
   width: 100%;
   padding: 4px 8px;
@@ -530,13 +550,14 @@ html {
   height: 26px;
 }
 
+/* When clicking on custom category input, these stylings are applied to the input box */
 .custom-category-input:focus {
   outline: none;
   border-color: #318da9;
   box-shadow: 0 0 0 1px rgba(49, 141, 169, 0.2);
 }
 
-/* Connection Modal Factors Styles */
+/* Container Holding factors 1 and 2 selection in "Create Connection" Modal */
 .connection-factors {
   display: flex;
   justify-content: space-between;
@@ -545,10 +566,12 @@ html {
   gap: 20px;
 }
 
+/* Container for individual factor selection (holds title "Factor 1", and "Click to Select" box) */
 .factor-selector {
   flex: 1;
 }
 
+/* Title for factor selection in connection modal ("Factor 1" and "Factor 2") */
 .factor-label {
   font-weight: 600;
   margin-bottom: 8px;
@@ -556,6 +579,7 @@ html {
   font-size: 14px;
 }
 
+/* "Click to Select" container */
 .factor-box {
   border: 2px dashed #dee2e6;
   padding: 15px;
@@ -570,17 +594,19 @@ html {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
+/* When hovering over "Click to Select" box, this coloring is applied (blue border) */
 .factor-box:hover {
   border-color: #4dabf7;
 }
 
+/* Styling for "Click to Select" text */
 .click-to-select {
   color: #868e96;
   font-style: italic;
   font-size: 14px;
 }
 
-/* Connection description styling */
+/* "Connection Description" input box styling */
 #connectionDescription {
   width: 100%;
   min-height: 100px;
@@ -591,20 +617,21 @@ html {
   transition: all 0.2s ease-in-out;
 }
 
+/* When clicking on "Connection Description" input box, these changes are applied */
 #connectionDescription:focus {
   border-color: #339af0;
   outline: none;
   box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
 }
 
-/* Cancel / Save Buttons Container */
+/* "Cancel" / "Save" Buttons Container within "Add Factor" and "Create Connection" modals */
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-/* Cancel / Save Buttons */
+/* "Cancel" / "Save" Buttons Base Styling */
 .btn {
   padding: 8px 16px;
   border: none;
@@ -614,26 +641,29 @@ html {
   transition: background-color 0.2s;
 }
 
+/* "Cancel" button in modal coloring */
 .btn-cancel {
   background-color: #f0f0f0;
   color: #333;
 }
 
+/* When hovering over "Cancel" button, these changes are applied */
 .btn-cancel:hover {
   background-color: #e0e0e0;
 }
 
+/* "Save" button in modal coloring */
 .btn-save {
   background-color: #318da9;
   color: white;
 }
 
+/* When hovering over "Save" button, these changes are applied */
 .btn-save:hover {
   background-color: #2a7a92;
 }
 
-/* DROP ZONE */
-
+/* DROP ZONE (center box where factors are dropped) */
 .drop {
   justify-content: center;
   align-items: center;
@@ -648,7 +678,7 @@ html {
 
 /* CONNECTION MODE */
 
-/* Connection Mode Drop Zone */
+/* Stylings applied to Drop Zone when in Connection Mode */
 .connection-mode-active #drop-zone {
   position: relative;
   outline: 2px solid #4a6cf7;
@@ -656,7 +686,7 @@ html {
   transition: all 0.3s ease;
 }
 
-/* Disables add factor and create connection button while in connection mode*/
+/* Disables (cannot click) "Add Factor", "Create Connection", and "Clear Board" buttons while in connection mode */
 .connection-mode-active button:disabled {
   opacity: 0.3 !important;
   cursor: not-allowed !important;
@@ -664,7 +694,7 @@ html {
   transition: opacity 0.3s ease;
 }
 
-/* Disables factors outside dropzone while in connection mode */
+/* Disables (cannot click) factors outside dropzone (who have "pointer-events: none") while in connection mode */
 .connection-mode-active .factor[style*="pointer-events: none"] {
   opacity: 0.2 !important;
   cursor: not-allowed !important;
@@ -672,14 +702,14 @@ html {
   transition: opacity 0.3s ease;
 }
 
-/* Disables info panel while in connection-mode */
+/* Disables (cannot click) info panel while in connection mode */
 .connection-mode-active .info-panel {
   opacity: 0.3 !important;
   pointer-events: none !important;
   transition: opacity 0.3s ease;
 }
 
-/* Cancel connection button */
+/* "Cancel" button in top right of dropzone in connection mode styling */
 .cancel-connection-btn {
   position: absolute;
   top: 10px;
@@ -695,11 +725,12 @@ html {
   transition: all 0.2s ease-in-out;
 }
 
+/* When hovering over "Cancel" button in connection mode, these stylings are applied */
 .cancel-connection-btn:hover {
   background: #ce2029;
 }
 
-/* Bottom Bar (Add Factor + Create Connection) */
+/* Bottom Action Bar container (Contains "Add Factor", "Create Connection", and "Clear Board" buttons) */
 .bottom-bar {
   position: fixed;
   bottom: 4%;
@@ -710,7 +741,7 @@ html {
   z-index: 9998;
 }
 
-/* Add Factor / Create Connection Buttons */
+/* "Add Factor" / "Create Connection" / "Clear Board" Buttons */
 .action-btn {
   color: #318da9;
   border: none;
@@ -724,23 +755,25 @@ html {
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+/* When hovering over "Add Factor" / "Create Connection" / "Clear Board" Buttons, these stylings are applied */
 .action-btn:hover {
-  transform: scale(1.02);
   color: #ffffff;
   background-color: #318da9;
 }
 
+/* Specific coloring of "Clear Board" button */
 .action-btn#clearBoardBtn {
   color: white;
   background: #e74c3c;
   transition: all 0.2s ease-in-out;
 }
+
+/* When hovering over "Clear Board" button, these stylings are applied */
 .action-btn#clearBoardBtn:hover {
   background: #9b2b1f;
-  transform: scale(1);
 }
 
-/* SCROLLBAR */
+/* SCROLLBAR stylings */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

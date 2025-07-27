@@ -8,46 +8,56 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <!-- **************** -->
     <!-- Add Factor Modal -->
+    <!-- **************** -->
     <div id="addFactorModal" class="modal">
         <div class="modal-content">
-            <!-- Title of Modal (Switched to "Edit Factor" when editing a factor) -->
+            <!-- Title of Modal (Switches to "Edit Factor" when editing a factor) -->
             <h2 class="modal-title">Add Factor</h2>
-            <!-- Label and Input Pairings for Factor Information -->
+            <!-- "Factor Name" and Input Box Container for Custom Factor Information -->
             <div class="form-group">
-                <label for="factorName">Factor Name:</label>
+                <label for="factorName">Factor Name <span style="color: red">*</span></label>
                 <input type="text" id="factorName" placeholder="Enter factor name" maxlength="75"> <!-- Limit length of input -->
+                <!-- Character count (initialized to 0/75, updated as user types in factor name) -->
                 <small style="color: #666; font-size: 11px;">
-                    <span id="charCount">0</span>/75 characters <!-- Count of characters, update charCount in main.js -->
+                    <span id="charCount">0</span>/75 characters <!-- Count of characters - is updated in main.js depending on input -->
                 </small>
             </div>
+            <!-- "Definition" and Input Box Container for Custom Factor Information -->
             <div class="form-group">
-                <label for="factorDescription">Definition:</label>
+                <label for="factorDescription">Definition</label>
                 <textarea id="factorDescription" placeholder="Enter factor definition"></textarea>
             </div>
+            <!-- "Citation" and Input Box Container for Custom Factor Information -->
             <div class="form-group">
-                <label for="factorCitation">Citation:</label>
+                <label for="factorCitation">Citation</label>
                 <textarea id="factorCitation" placeholder="Enter factor citation"></textarea>
             </div>
+            <!-- "Factor Category" and Multiple Choice Options for Custom Factor Information -->
             <div class="form-group">
-                <label>Factor Category:</label>
+                <label>Factor Category</label>
                 <!-- Multi-Choice Options for Categories -->
                 <div class="radio-group">
+                    <!-- Designed Features Option -->
                     <label class="radio-option">
                         <input type="radio" name="factorCategory" value="designed_features">
                         <span class="radio-checkmark"></span>
                         <span class="radio-label">Designed Features</span>
                     </label>
+                    <!-- Behavioral Health Option -->
                     <label class="radio-option">
                         <input type="radio" name="factorCategory" value="behavioral_health">
                         <span class="radio-checkmark"></span>
                         <span class="radio-label">Behavioral Health</span>
                     </label>
+                    <!-- Custom Option (has associated Input Box if clicked) -->
                     <label class="radio-option">
                         <input type="radio" name="factorCategory" value="custom">
                         <span class="radio-checkmark"></span>
                         <span class="radio-label">Custom:</span>
                     </label>
+                    <!-- Input box to enter custom factor category -> only appears if "Custom" is picked -->
                     <div class="custom-category-container">
                         <input type="text" id="customCategory" class="custom-category-input" placeholder="Enter category name">
                     </div>
@@ -61,19 +71,23 @@
         </div>
     </div>
 
+    <!-- *********************** -->
     <!-- Create Connection Modal -->
+    <!-- *********************** -->
     <div id="createConnectionModal" class="modal">
         <div class="modal-content">
-            <!-- Title of Modal (Switched to "Edit Connection" when editing a connection) -->
+            <!-- Title of Modal (Switches to "Edit Connection" when editing a connection) -->
             <h2 class="modal-title">Create Connection</h2>
-            <!-- Boxes which are clicked on to select factors to connect -->
+            <!-- Boxes which are clicked on to select factors to connect (triggers Connection Mode) -->
             <div class="connection-factors">
+                <!-- Clicked on to select first factor -->
                 <div class="factor-selector">
                     <div class="factor-label">Factor 1</div>
                     <div class="factor-box" id="factor1Box">
                         <div class="click-to-select">Click to Select</div>
                     </div>
                 </div>
+                <!-- Clicked on to select second factor -->
                 <div class="factor-selector">
                     <div class="factor-label">Factor 2</div>
                     <div class="factor-box" id="factor2Box">
@@ -83,7 +97,7 @@
             </div>
             <!-- Label and Input Pairing for Connection Information -->
             <div class="form-group">
-                <label for="connectionDescription">Connection Description:</label>
+                <label for="connectionDescription">Connection Description</label>
                 <textarea id="connectionDescription" placeholder="Describe the connection between these factors"></textarea>
             </div>
             <!-- Cancel and Save Buttons -->
@@ -94,12 +108,14 @@
         </div>
     </div>
 
-    <!-- Main Container (page) -->
+    <!-- ************************************************************************ -->
+    <!-- Overall Container (contains factors container, dropzone, and info panel) -->
+    <!-- ************************************************************************ -->
     <div class="container" id="main-container">
         <!-- Factors Container (Designed Features and Behavioral Health)-->
         <div class="categories">
             <p class="categories-title">Factors</p>
-            <!-- Designed Features -->
+            <!-- Designed Features Factors -->
             <div class="box box1" data-category="designed_features">
                 <div class="section_header">Designed Features</div>
                 <div class="factors-container">
@@ -135,7 +151,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Behavioral Health & Performance -->
+            <!-- Behavioral Health & Performance Factors-->
             <div class="box box2" data-category="behavioral_health">
                 <div class="section_header">Behavioral Health & Performance</div>
                 <div class="factors-container">
@@ -185,12 +201,12 @@
             </div>
         </div>
 
-        <!-- Drop Zone (where factors are dropped) -->
+        <!-- Drop Zone (center box where factors are dropped) -->
         <div class="drop" id="drop-zone">
             <!-- SVG Canvas for drawing arrows -->
             <svg id="arrow-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></svg>
 
-            <!-- Bottom Action Bar -->
+            <!-- Bottom Action Bar (Contains "Add Factor", "Create Connection", and "Clear Board" buttons)-->
             <div class="bottom-bar">
                 <button class="action-btn" id="addBtn">
                     <i class="fas fa-plus"></i> Add Factor
@@ -208,14 +224,16 @@
         <div class="info-panel">
             <!-- Default Title and Description (Changed upon factor and connection click)-->
             <h3>Factor Information</h3>
+            <!-- Specific content (definitions, citations, and categories) displayed-->
             <div class="info-content">
                 <p>Click on any factor to see detailed information here.</p>
             </div>
+            <!-- Edit and Delete Buttons -> only displayed on info panel for custom-made items (custom factors and connections)-->
             <div class="info-actions" style="display: none;">
-                <button id="editFactor" class="edit"> <!-- Edit Button, change ID depending on factor or connection -->
+                <button id="editFactor" class="edit"> <!-- Edit Button, change ID (editFactor vs. editConnection) depending on factor or connection selection -->
                     <i class="fas fa-edit"></i> Edit
                 </button>
-                <button id="deleteFactor" class="delete"> <!-- Delete Button, change ID depending on factor or connection -->
+                <button id="deleteFactor" class="delete"> <!-- Delete Button, change ID (deleteFactor vs. deleteConnection) depending on factor or connection selection -->
                     <i class="fas fa-trash"></i> Delete
                 </button>
             </div>
