@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HECIA Workshop Export</title>
+    <link rel="stylesheet" href="export.css" />
+  </head>
+  <body>
+    <div class="export-container">
+      <div class="export-header">
+        <!-- Title of Export -->
+        <h1>HECIA Workshop Export</h1>
+        <!-- Statistics (# Factors, # Connections) -->
+        <div class="export-stats">
+          <div class="stat">
+            <span class="stat-number">{{totalFactors}}</span>
+            <span class="stat-label">Factors</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">{{totalConnections}}</span>
+            <span class="stat-label">Connections</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content of export (Layout, Factors, Connections) -->
+      <div class="export-content">
+        <!-- Layout (Screenshot of dropzone) -->
+        <div class="section">
+          <h2>Layout</h2>
+          <div class="dropzone-screenshot">{{dropzoneScreenshot}}</div>
+        </div>
+
+        <!-- Factors -->
+        <div class="section">
+          <h2>Factors</h2>
+          {{factorHTML}}
+        </div>
+
+        <!-- Connections -->
+        <div class="section">
+          <h2>Connections</h2>
+          {{connectionHTML}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

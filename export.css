@@ -1,0 +1,145 @@
+/* Base styles */
+body {
+  font-family: monospace;
+  background: white;
+}
+
+/* Container holding entire export */
+.export-container {
+  height: 100%;
+  width: 100%;
+}
+
+/* Container for header "HECIA Workshop Export" and Factor/Connection count */
+.export-header {
+  background: #318da9;
+  margin: 16px 0;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  gap: 10px;
+}
+
+/* Styling for "HECIA Workshop Export" */
+.export-header h1 {
+  font-size: 2.5em;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+/* Container for Factor/Container Statistics */
+.export-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+/* Styling for statistics - number of connections and factors */
+.stat-number {
+  font-size: 2em;
+  font-weight: bold;
+  display: block;
+}
+
+/* Styling for statistics - label of either "Factors" or "Connections" */
+.stat-label {
+  font-size: 0.9em;
+  opacity: 0.9;
+}
+
+/* Container for exported content (Layout, Factors, Connections) */
+.export-content {
+  padding: 10px;
+}
+
+/* Container for individual sections of exported content (Layout, Factors, Connections) */
+.section {
+  margin-bottom: 20px;
+}
+
+/* Title for individual section of exported content ("Layout", "Factors", "Connections") */
+.section h2 {
+  color: #333;
+  border-bottom: 2px solid #318da9;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+/* Container for individual factor/connection */
+.export-item {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-left: 4px solid #318da9;
+}
+
+/* Title for individual factor/connection */
+.export-item h3 {
+  margin: 0;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 1.3em;
+}
+
+/* Factor category styling */
+.factor-category {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* Category color stylings */
+.category-df {
+  background-color: #56b4e9;
+  border: 1px solid #3a9bd1;
+}
+
+.category-bh {
+  background-color: #e69f00;
+  border: 1px solid #cc8f00;
+}
+
+.category-default {
+  background-color: #8d8d8d;
+  border: 1px solid #505050;
+}
+
+/* Description/Definition of factor/connection styling */
+.description {
+  color: #555;
+  line-height: 1.2;
+  font-size: 1em;
+}
+
+/* Citation of factor styling */
+.factor-citation {
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+  color: #666;
+  margin-top: 10px;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+/* Indication of custom factor */
+.custom-badge {
+  display: inline-block;
+  background: #000000;
+  color: rgb(255, 255, 255);
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  margin-top: 10px;
+}
+
+/* Container for screenshot of dropzone */
+.dropzone-screenshot {
+  max-width: 50%;
+  margin: 0 auto;
+  display: block;
+}

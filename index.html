@@ -206,13 +206,16 @@
             <!-- SVG Canvas for drawing arrows -->
             <svg id="arrow-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></svg>
 
-            <!-- Bottom Action Bar (Contains "Add Factor", "Create Connection", and "Clear Board" buttons)-->
+            <!-- Bottom Action Bar (Contains "Add Factor", "Create Connection", "Clear Board", and "Export" buttons)-->
             <div class="bottom-bar">
                 <button class="action-btn" id="addBtn">
                     <i class="fas fa-plus"></i> Add Factor
                 </button>
                 <button class="action-btn" id="connectBtn">
                     <i class="fas fa-link"></i> Create Connection
+                </button>
+                <button class="action-btn" id="exportBtn">
+                    <i class="fas fa-download"></i> Export
                 </button>
                 <button class="action-btn" id="clearBoardBtn">
                     <i class="fas fa-trash"></i> Clear Board
@@ -223,10 +226,10 @@
         <!-- Info Panel (where factor/connection information is displayed) -->
         <div class="info-panel">
             <!-- Default Title and Description (Changed upon factor and connection click)-->
-            <h3>Factor Information</h3>
+            <h3>Factor/Connection Information</h3>
             <!-- Specific content (definitions, citations, and categories) displayed-->
             <div class="info-content">
-                <p>Click on any factor to see detailed information here.</p>
+                <p>Click on any factor or connection to see detailed information here.</p>
             </div>
             <!-- Edit and Delete Buttons -> only displayed on info panel for custom-made items (custom factors and connections)-->
             <div class="info-actions" style="display: none;">
@@ -242,5 +245,6 @@
 </div>
 
 <script src="main.js"></script>
+<script src="export.js"></script>
 </body>
 </html>

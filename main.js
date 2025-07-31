@@ -229,6 +229,9 @@ const elements = {
 
   // Clear Board Button
   clearBoardBtn: document.getElementById("clearBoardBtn"),
+
+  // Export Button
+  exportBtn: document.getElementById("exportBtn"),
 };
 
 // ************************************
@@ -252,27 +255,6 @@ let dragStartX = 0;
 let dragStartY = 0;
 let didDrag = false;
 const DRAG_THRESHOLD = 5; // pixels
-
-// Factor Click Suppression (if not already added)
-if (!window._factorClickSuppressionAdded) {
-  // When the document registers a click, if dragJustHappened is true and the click was
-  // registered on a factor, return before selecting the factor
-  document.addEventListener(
-    "click",
-    function (e) {
-      if (dragJustHappened && !isInConnectionMode) {
-        dragJustHappened = false;
-        if (e.target.closest(".factor")) {
-          e.stopImmediatePropagation();
-          e.preventDefault();
-          return false;
-        }
-      }
-    },
-    true
-  );
-  window._factorClickSuppressionAdded = true;
-}
 
 // Function called when we begin to drag any factor
 function handleCustomMouseDown(e) {
@@ -404,6 +386,12 @@ function handleCloneMouseUp(e) {
     originalSidebarFactor.style.left = dragClone.style.left;
     originalSidebarFactor.style.top = dragClone.style.top;
     originalSidebarFactor.classList.remove("dragging");
+
+    // Ensure the factor is properly added to the document body
+    if (originalSidebarFactor.parentNode !== document.body) {
+      document.body.appendChild(originalSidebarFactor);
+    }
+
     saveWorkspaceState();
   }
 
@@ -836,10 +824,11 @@ function handleFactorBoxClick(boxNumber) {
 
 // Disable buttons and factors during connection mode
 function disableElementsForConnectionMode() {
-  // Disable Add Factor, Create Connection, Clear Board button
+  // Disable Add Factor, Create Connection, Clear Board, Export button
   elements.addBtn.disabled = true;
   elements.connectBtn.disabled = true;
   elements.clearBoardBtn.disabled = true;
+  elements.exportBtn.disabled = true;
 
   // Find the factor we've already selected to disable choosing same factor
   let alreadySelectedFactor = null;
@@ -877,10 +866,11 @@ function disableElementsForConnectionMode() {
 
 // Re-enable buttons and factors after connection mode
 function enableElementsAfterConnectionMode() {
-  // Re-enable Add Factor, Create Connection, Clear Board button
+  // Re-enable Add Factor, Create Connection, Clear Board, Export button
   elements.addBtn.disabled = false;
   elements.connectBtn.disabled = false;
   elements.clearBoardBtn.disabled = false;
+  elements.exportBtn.disabled = false;
 
   // Re-enable all factors
   document.querySelectorAll(".factor").forEach((factor) => {
@@ -1013,7 +1003,11 @@ document.addEventListener("click", function (e) {
     return;
   }
 
-  if (isInConnectionMode) {
+  if (dragJustHappened && !isInConnectionMode) {
+    dragJustHappened = false;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  } else if (isInConnectionMode) {
     selectFactorForConnection(factorElement);
   } else {
     selectFactor(factorElement);
@@ -1224,6 +1218,48 @@ function updateArrows() {
 // Update arrows when window is resized
 window.addEventListener("resize", updateArrows);
 
+// Helper function to check if adding a connection would create a cycle
+function wouldCreateCycle(newConnection) {
+  // Create a temporary graph with the new connection
+  const tempConnections = [...connections, newConnection];
+
+  // Build adjacency list for directed graph
+  const graph = {};
+  tempConnections.forEach((conn) => {
+    if (!graph[conn.factor1]) graph[conn.factor1] = [];
+    graph[conn.factor1].push(conn.factor2);
+  });
+
+  // DFS to detect cycles
+  const visited = new Set();
+  const stack = new Set();
+
+  function hasCycle(node) {
+    if (stack.has(node)) return true;
+    if (visited.has(node)) return false;
+
+    visited.add(node);
+    stack.add(node);
+
+    const neighbors = graph[node] || [];
+    for (const neighbor of neighbors) {
+      if (hasCycle(neighbor)) return true;
+    }
+
+    stack.delete(node);
+    return false;
+  }
+
+  // Check for cycles starting from each node
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      if (hasCycle(node)) return true;
+    }
+  }
+
+  return false;
+}
+
 // Handle saving a connection (create new or update existing)
 function handleSaveConnection() {
   const description = document
@@ -1257,6 +1293,22 @@ function handleSaveConnection() {
   // If a connection between factors already exists, give an alert and return
   if (connectionExists) {
     alert("A connection between these factors already exists");
+    return;
+  }
+
+  // Create the new connection object to test for cycles
+  const newConnection = {
+    factor1: selectedFactor1,
+    factor2: selectedFactor2,
+    description: description,
+    timestamp: new Date().toISOString(),
+  };
+
+  // Check if adding this connection would create a cycle
+  if (wouldCreateCycle(newConnection)) {
+    alert(
+      "This connection would create a loop. Please choose a different connection."
+    );
     return;
   }
 
@@ -1307,19 +1359,12 @@ function handleSaveConnection() {
   }
   // Otherwise, create a new connection
   else {
-    const connection = {
-      factor1: selectedFactor1,
-      factor2: selectedFactor2,
-      description: description,
-      timestamp: new Date().toISOString(),
-    };
-
     // Add to connections array and draw the arrow
-    connections.push(connection);
-    drawArrow(connection);
+    connections.push(newConnection);
+    drawArrow(newConnection);
 
     // Update the connection ID in the hit area after it's added to the array
-    const hitArea = connection.elements?.hitArea;
+    const hitArea = newConnection.elements?.hitArea;
     if (hitArea) {
       hitArea.setAttribute("data-connection-id", connections.length - 1);
     }
@@ -1328,7 +1373,7 @@ function handleSaveConnection() {
     closeCreateConnectionModal();
 
     // Automatically select the newly created connection
-    selectConnection(connection);
+    selectConnection(newConnection);
   }
   saveWorkspaceState(); // <--- Save after connection change
 }
@@ -1621,7 +1666,7 @@ function updateUI() {
     // Reset the title to default
     const titleElement = document.querySelector(".info-panel h3");
     if (titleElement) {
-      titleElement.textContent = "Factor Information";
+      titleElement.textContent = "Factor/Connection Information";
     }
     infoContent.innerHTML =
       "<p>Click on any factor or connection to see detailed information here.</p>";
@@ -1702,6 +1747,13 @@ function init() {
   // Add Clear Board button handler
   if (elements.clearBoardBtn) {
     elements.clearBoardBtn.addEventListener("click", clearBoard);
+  }
+
+  // EXPORT BUTTON
+
+  // Add Export button handler
+  if (elements.exportBtn) {
+    elements.exportBtn.addEventListener("click", exportWorkspace);
   }
 
   // SVG FOR ARROWS
