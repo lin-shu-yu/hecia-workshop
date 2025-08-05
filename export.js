@@ -44,6 +44,9 @@ async function exportWorkspace() {
     description: conn.description,
   }));
 
+  // Clear factor/connection selections
+  clearFactorOrConnection();
+
   // Capture dropzone screenshot
   const dropzoneScreenshot = await captureDropzoneScreenshot();
 
@@ -63,29 +66,6 @@ async function exportWorkspace() {
   downloadHTMLFile(exportHTML);
 }
 
-// Function to download HTML file
-function downloadHTMLFile(htmlContent) {
-  // Create blob with HTML content
-  const blob = new Blob([htmlContent], { type: "text/html" });
-
-  // Create download link
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-
-  // Generate filename with timestamp
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, -5);
-  a.download = `hecia-export-${timestamp}.html`;
-
-  // Trigger download
-  document.body.appendChild(a);
-  a.click();
-
-  // Clean up
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
 // Capture screenshot of the dropzone
 async function captureDropzoneScreenshot() {
   const dropzone = document.getElementById("drop-zone");
@@ -94,9 +74,6 @@ async function captureDropzoneScreenshot() {
     if (typeof html2canvas === "undefined") {
       await loadHtml2Canvas();
     }
-
-    // Clear factor/connection selections
-    clearFactorOrConnection();
 
     // Temporarily hide the bottom bar (buttons)
     const bottomBar = dropzone.querySelector(".bottom-bar");
@@ -145,7 +122,7 @@ async function captureDropzoneScreenshot() {
   }
 }
 
-// Load html2canvas library
+// Load html2canvas library (tool that takes SS of HTML element and renders it into a canvas element)
 async function loadHtml2Canvas() {
   return new Promise((resolve, reject) => {
     if (typeof html2canvas !== "undefined") {
@@ -162,7 +139,7 @@ async function loadHtml2Canvas() {
   });
 }
 
-// Generate HTML content for export
+// Styling for actual HTML Download (Screenshot, Factor Cards, Connection Cards)
 async function generateExportHTML(data) {
   // Factor categories map
   const factorCategories = {
@@ -180,6 +157,8 @@ async function generateExportHTML(data) {
         .replace(/\s/g, "_");
       const categoryDisplay =
         factorCategories[normalizedCategory] || factor.category;
+
+      // To set correct category color for category tag
       const categoryClass =
         normalizedCategory === "designed_features"
           ? "category-df"
@@ -187,8 +166,16 @@ async function generateExportHTML(data) {
           ? "category-bh"
           : "category-default";
 
+      // To set correct border-left (based on category) for factor item
+      const categoryItem =
+        normalizedCategory === "designed_features"
+          ? "export-item-df"
+          : normalizedCategory === "behavioral_health"
+          ? "export-item-bh"
+          : "export-item-default";
+
       return `
-      <div class="export-item">
+      <div class="export-item ${categoryItem}">
         <h3>${factor.title}</h3>
         <div class="factor-category ${categoryClass}">${categoryDisplay}</div>
         <p class="description">${
@@ -211,7 +198,7 @@ async function generateExportHTML(data) {
   const connectionHTML = data.connections
     .map(
       (conn) => `
-    <div class="export-item">
+    <div class="export-item export-item-connection">
       <h3>${conn.factor1.title} → ${conn.factor2.title}</h3>
       <p class="description">${
         conn.description || "No description available."
@@ -240,11 +227,34 @@ async function generateExportHTML(data) {
   template = template.replace("{{factorHTML}}", factorHTML);
   template = template.replace("{{connectionHTML}}", connectionHTML);
 
-  // Get screenshot and replace placeholder
+  // Get screenshot and replace screenshot placeholder
   const screenshotHTML = data.dropzoneScreenshot
     ? `<img src="${data.dropzoneScreenshot}" alt="Dropzone Screenshot" style="max-width: 100%"/>`
     : "<p>No screenshot available</p>";
   template = template.replace("{{dropzoneScreenshot}}", screenshotHTML);
 
   return template;
+}
+
+// Function to download HTML file
+function downloadHTMLFile(htmlContent) {
+  // Create blob with HTML content
+  const blob = new Blob([htmlContent], { type: "text/html" });
+
+  // Create download link
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+
+  // Generate filename with timestamp
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, -5);
+  a.download = `hecia-export-${timestamp}.html`;
+
+  // Trigger download
+  document.body.appendChild(a);
+  a.click();
+
+  // Clean up
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

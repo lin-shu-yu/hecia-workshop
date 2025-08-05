@@ -18,6 +18,7 @@ body {
   padding: 10px 15px;
   text-align: center;
   gap: 10px;
+  border-radius: 5px;
 }
 
 /* Styling for "HECIA Workshop Export" */
@@ -71,6 +72,23 @@ body {
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
+}
+
+/* Set border-left based on category for factor */
+.export-item-df {
+  border-left: 4px solid #56b4e9;
+}
+
+.export-item-bh {
+  border-left: 4px solid #e69f00;
+}
+
+.export-item-default {
+  border-left: 4px solid #8d8d8d;
+}
+
+/* Set border-left for connection */
+.export-item-connection {
   border-left: 4px solid #318da9;
 }
 
